@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lzx.dao.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.lzx.entity.Order">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="petId" jdbcType="INTEGER" property="petId" />
+    <result column="quantity" jdbcType="INTEGER" property="quantity" />
+    <result column="shipDate" jdbcType="TIMESTAMP" property="shipDate" />
+    <result column="stratus" jdbcType="VARCHAR" property="stratus" />
+    <result column="complete" jdbcType="BIT" property="complete" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from order
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lzx.entity.Order">
+    insert into order (id, petId, quantity, 
+      shipDate, stratus, complete
+      )
+    values (#{id,jdbcType=INTEGER}, #{petId,jdbcType=INTEGER}, #{quantity,jdbcType=INTEGER}, 
+      #{shipDate,jdbcType=TIMESTAMP}, #{stratus,jdbcType=VARCHAR}, #{complete,jdbcType=BIT}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.lzx.entity.Order">
+    update order
+    set petId = #{petId,jdbcType=INTEGER},
+      quantity = #{quantity,jdbcType=INTEGER},
+      shipDate = #{shipDate,jdbcType=TIMESTAMP},
+      stratus = #{stratus,jdbcType=VARCHAR},
+      complete = #{complete,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, petId, quantity, shipDate, stratus, complete
+    from order
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, petId, quantity, shipDate, stratus, complete
+    from order
+  </select>
+
+
+  <select id="selectByStatus" resultType="com.lzx.entity.Order">
+    select id, petId, quantity, shipDate, stratus, complete
+    from order
+    where stratus = #{stratus,jdbcType=VARCHAR}
+  </select>
+</mapper>

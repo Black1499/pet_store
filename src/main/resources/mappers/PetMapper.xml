@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lzx.dao.PetMapper">
+  <resultMap id="BaseResultMap" type="com.lzx.entity.Pet">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="category_id" jdbcType="INTEGER" property="category_id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="photo_urls" jdbcType="VARCHAR" property="photo_urls" />
+    <result column="tag_id" jdbcType="INTEGER" property="tag_id" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from pet
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.lzx.entity.Pet">
+    insert into pet (id, category_id, name, 
+      photo_urls, tag_id, status
+      )
+    values (#{id,jdbcType=INTEGER}, #{category_id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{photo_urls,jdbcType=VARCHAR}, #{tag_id,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.lzx.entity.Pet">
+    update pet
+    set category_id = #{category_id,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      photo_urls = #{photo_urls,jdbcType=VARCHAR},
+      tag_id = #{tag_id,jdbcType=INTEGER},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, category_id, name, photo_urls, tag_id, status
+    from pet
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, category_id, name, photo_urls, tag_id, status
+    from pet
+  </select>
+  <select id="selectByStatus" resultType="com.lzx.entity.Pet">
+    select id, category_id, name, photo_urls, tag_id, status
+    from pet
+    where
+  </select>
+</mapper>
