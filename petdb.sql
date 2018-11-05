@@ -1,5 +1,4 @@
 drop database if exists petdb;
-
 create database petdb;
 use petdb;
 
@@ -44,9 +43,9 @@ create table tag(
 	id int primary key auto_increment,
 	name varchar(20)
 );
-insert into tag values(0,'小型');
-insert into tag values(0,'中型');
-insert into tag values(0,'大型');
+insert into tag values(0,'狗狗');
+insert into tag values(0,'猫猫');
+insert into tag values(0,'鹦鹉');
 
 
 create table pet(
@@ -58,7 +57,7 @@ create table pet(
 	status enum('available', 'pending', 'sold')
 );
 
-insert into pet values(0,1,'泰迪','img/1.png',1,'available');
-
-
+insert into pet values(0,1,'大黄','img/1.png',1,'available');
+insert into pet values(0,2,'二哈','img/2.png',1,'available');
+insert into pet values(0,4,'撕家','img/3.png',1,'available');
 
