@@ -22,10 +22,10 @@
   </delete>
   <insert id="insert" parameterType="com.lzx.entity.Pet" useGeneratedKeys="true" keyColumn="id">
     insert into pet (category_id, name,
-      photo_urls, tag_id, status
+       tag_id, status
       )
     values (#{category_id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
-      #{photo_urls,jdbcType=VARCHAR}, #{tag_id,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}
+      #{tag_id,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}
       )
   </insert>
 
@@ -58,7 +58,7 @@
     select <include refid="petInfo"/>
   </select>
 
-  <select id="selectByStatus" resultType="com.lzx.entity.Pet" parameterType="string">
+  <select id="selectByStatus" resultMap="BaseResultMap" parameterType="string">
     select <include refid="petInfo"/>
     where p.status = #{status}
   </select>

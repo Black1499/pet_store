@@ -52,7 +52,7 @@ create table pet(
 	id int primary key auto_increment,
 	category_id int references category(id),
 	name varchar(20),
-	photo_urls varchar(20),
+	photo_urls varchar(200),
 	tag_id int references tag(id),
 	status enum('available', 'pending', 'sold')
 );

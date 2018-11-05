@@ -81,4 +81,29 @@ public class Pet {
     public void setTag_id(int tag_id) {
         this.tag_id = tag_id;
     }
+
+    public Pet(int category_id, String name, int tag_id, String status) {
+        this.category_id = category_id;
+        this.name = name;
+        this.tag_id = tag_id;
+        this.status = status;
+    }
+
+    public Pet(Integer id, String photo_urls) {
+        this.id = id;
+        this.photo_urls = photo_urls;
+    }
+
+    public Pet(Integer id, int category_id, String name, int tag_id, String status) {
+        this.id = id;
+        this.category_id = category_id;
+        this.name = name;
+        this.tag_id = tag_id;
+        this.status = status;
+    }
+
+    public Pet() {
+    }
+
+
 }

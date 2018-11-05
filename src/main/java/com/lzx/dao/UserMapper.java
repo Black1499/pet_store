@@ -1,10 +1,14 @@
 package com.lzx.dao;
 
 import com.lzx.entity.User;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface UserMapper {
+
     int deleteByPrimaryKey(Integer id);
+
     int deleteByUserName(String userName);
 
     int insert(User record);
@@ -17,7 +21,9 @@ public interface UserMapper {
 
     int updateByPrimaryKey(User record);
 
-    int logIn(User user);
+    int updateByUserName(User record);
+
+    int selectByNameAndPassword(User user);
 
     int updateStatus(User user);
 }

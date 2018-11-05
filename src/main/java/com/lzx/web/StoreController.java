@@ -20,22 +20,23 @@ public class StoreController {
     @GetMapping("/inventory")
     @ResponseBody
     public ResponseEntity getInventory() {
-        order = orderMapper.selectByStatus("inventoru");
-        if (order != null) {
-            return ResponseEntity.status(200).body(order);
-        }
+//        order = orderMapper.selectByStatus("inventor");
+//        if (order != null) {
+//            return ResponseEntity.status(200).body(order);
+//        }
         return null;
     }
 
     @PostMapping("/order")
     @ResponseBody
     public ResponseEntity addOrder(Order order) {
-        order = orderMapper.insert(order);
-        if (order != null) {
-            return ResponseEntity.status(200).body(order);
-        } else {
-            return ResponseEntity.status(400).body(new ApiResponse(1, "error", "Invalid Order"));
-        }
+//        order = orderMapper.insert(order);
+//        if (order != null) {
+//            return ResponseEntity.status(200).body(order);
+//        } else {
+//            return ResponseEntity.status(400).body(new ApiResponse(1, "error", "Invalid Order"));
+//        }
+        return null;
     }
 
     @GetMapping("/order/{orderId}")

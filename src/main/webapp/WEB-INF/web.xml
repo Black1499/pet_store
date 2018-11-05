@@ -4,6 +4,27 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
   <display-name>Archetype Created Web Application</display-name>
+
+  <!--RESTful过滤器，针对delete和put请求-->
+  <filter>
+    <filter-name>HiddenHttpMethodFilter</filter-name>
+    <filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>HiddenHttpMethodFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter>
+    <filter-name>HttpPutFormContentFilter</filter-name>
+    <filter-class>org.springframework.web.filter.HttpPutFormContentFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>HttpPutFormContentFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
+
   <!--解决中文乱码-->
   <filter>
     <filter-name>encodingFilter</filter-name>
@@ -18,6 +39,7 @@
     <filter-name>encodingFilter</filter-name>
     <url-pattern>/*</url-pattern>
   </filter-mapping>
+
 
   <!--配置 Spring 的容器-->
   <context-param>
@@ -37,6 +59,14 @@
       <param-name>contextConfigLocation</param-name>
       <param-value>classpath:spring/spring-web.xml</param-value>
     </init-param>
+
+    <!--配置文件的上传和下载-->
+    <load-on-startup>1</load-on-startup>
+    <multipart-config>
+      <!--<location>D:\二学年\IdeaWork\ssm_blog\src\main\webapp\images</location>-->
+      <max-file-size>-1</max-file-size>
+      <max-request-size>-1</max-request-size>
+    </multipart-config>
   </servlet>
   <servlet-mapping>
     <servlet-name>app</servlet-name>

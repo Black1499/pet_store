@@ -80,4 +80,40 @@ public class User {
     public void setUser_status(Integer user_status) {
         this.user_status = user_status;
     }
+
+    public User(Integer id, String user_name, String first_name, String last_name, String email, String password, String phone, Integer user_status) {
+        this.id = id;
+        this.user_name = user_name;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.user_status = user_status;
+    }
+
+    public User(String user_name, String first_name, String last_name, String email, String password, String phone, Integer user_status) {
+        this.user_name = user_name;
+        this.first_name = first_name;
+        this.last_name = last_name;
+        this.email = email;
+        this.password = password;
+        this.phone = phone;
+        this.user_status = user_status;
+    }
+
+    public User(String user_name, String password) {
+        this.user_name = user_name;
+        this.password = password;
+    }
+
+    public User(String user_name, Integer user_status) {
+        this.user_name = user_name;
+        this.user_status = user_status;
+    }
+
+    public User() {
+    }
+
+
 }

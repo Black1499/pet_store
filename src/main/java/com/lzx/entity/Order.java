@@ -62,4 +62,25 @@ public class Order {
     public void setComplete(Boolean complete) {
         this.complete = complete;
     }
+
+
+    public Order(Integer petId, Integer quantity, Date shipDate, String stratus, Boolean complete) {
+        this.petId = petId;
+        this.quantity = quantity;
+        this.shipDate = shipDate;
+        this.stratus = stratus;
+        this.complete = complete;
+    }
+
+    public Order(Integer id, Integer petId, Integer quantity, Date shipDate, String stratus, Boolean complete) {
+        this.id = id;
+        this.petId = petId;
+        this.quantity = quantity;
+        this.shipDate = shipDate;
+        this.stratus = stratus;
+        this.complete = complete;
+    }
+
+    public Order() {
+    }
 }

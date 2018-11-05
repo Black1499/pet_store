@@ -10,19 +10,19 @@
     <result column="complete" jdbcType="BIT" property="complete" />
   </resultMap>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from order
+    delete from `order`
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.lzx.entity.Order">
-    insert into order (id, petId, quantity, 
+  <insert id="insert" parameterType="com.lzx.entity.Order" useGeneratedKeys="true" keyColumn="id">
+    insert into `order` ( petId, quantity,
       shipDate, stratus, complete
       )
-    values (#{id,jdbcType=INTEGER}, #{petId,jdbcType=INTEGER}, #{quantity,jdbcType=INTEGER}, 
+    values ( #{petId,jdbcType=INTEGER}, #{quantity,jdbcType=INTEGER},
       #{shipDate,jdbcType=TIMESTAMP}, #{stratus,jdbcType=VARCHAR}, #{complete,jdbcType=BIT}
       )
   </insert>
   <update id="updateByPrimaryKey" parameterType="com.lzx.entity.Order">
-    update order
+    update `order`
     set petId = #{petId,jdbcType=INTEGER},
       quantity = #{quantity,jdbcType=INTEGER},
       shipDate = #{shipDate,jdbcType=TIMESTAMP},
@@ -32,18 +32,15 @@
   </update>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select id, petId, quantity, shipDate, stratus, complete
-    from order
+    from `order`
     where id = #{id,jdbcType=INTEGER}
   </select>
   <select id="selectAll" resultMap="BaseResultMap">
     select id, petId, quantity, shipDate, stratus, complete
-    from order
+    from `order`
   </select>
 
-
-  <select id="selectByStatus" resultType="com.lzx.entity.Order">
-    select id, petId, quantity, shipDate, stratus, complete
-    from order
-    where stratus = #{stratus,jdbcType=VARCHAR}
-  </select>
+   <select id="countByStatus" resultType="java.util.HashMap">
+     select stratus, count(stratus) from `order`
+   </select>
 </mapper>
