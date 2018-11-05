@@ -3,45 +3,64 @@
 <mapper namespace="com.lzx.dao.PetMapper">
   <resultMap id="BaseResultMap" type="com.lzx.entity.Pet">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="category_id" jdbcType="INTEGER" property="category_id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="photo_urls" jdbcType="VARCHAR" property="photo_urls" />
-    <result column="tag_id" jdbcType="INTEGER" property="tag_id" />
     <result column="status" jdbcType="VARCHAR" property="status" />
+    <association property="category"  javaType="com.lzx.entity.Category" >
+      <id column="gid" property="id"/>
+      <result column="gname" property="name"/>
+    </association>
+    <association property="tag" javaType="com.lzx.entity.Tag" >
+      <id column="tid" property="id"/>
+      <result column="tname" property="name"/>
+    </association>
   </resultMap>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from pet
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.lzx.entity.Pet">
-    insert into pet (id, category_id, name, 
+  <insert id="insert" parameterType="com.lzx.entity.Pet" useGeneratedKeys="true" keyColumn="id">
+    insert into pet (category_id, name,
       photo_urls, tag_id, status
       )
-    values (#{id,jdbcType=INTEGER}, #{category_id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+    values (#{category_id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},
       #{photo_urls,jdbcType=VARCHAR}, #{tag_id,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}
       )
   </insert>
+
   <update id="updateByPrimaryKey" parameterType="com.lzx.entity.Pet">
     update pet
     set category_id = #{category_id,jdbcType=INTEGER},
       name = #{name,jdbcType=VARCHAR},
-      photo_urls = #{photo_urls,jdbcType=VARCHAR},
       tag_id = #{tag_id,jdbcType=INTEGER},
       status = #{status,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select id, category_id, name, photo_urls, tag_id, status
-    from pet
+
+  <update id="upLoadImg">
+    update pet
+    set photo_urls = #{photo_urls,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <sql id="petInfo">
+    p.id, g.id as gid,g.name as gname, p.name, p.photo_urls, t.id as tid,t.name as tname, p.status
+    from pet p inner join category g on g.id = p.category_id
+    inner join tag t on t.id = p.tag_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select <include refid="petInfo"/>
+    where p.id = #{id,jdbcType=INTEGER}
   </select>
+
   <select id="selectAll" resultMap="BaseResultMap">
-    select id, category_id, name, photo_urls, tag_id, status
-    from pet
+    select <include refid="petInfo"/>
   </select>
-  <select id="selectByStatus" resultType="com.lzx.entity.Pet">
-    select id, category_id, name, photo_urls, tag_id, status
-    from pet
-    where
+
+  <select id="selectByStatus" resultType="com.lzx.entity.Pet" parameterType="string">
+    select <include refid="petInfo"/>
+    where p.status = #{status}
   </select>
+
 </mapper>

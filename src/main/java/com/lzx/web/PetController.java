@@ -4,9 +4,12 @@ import com.lzx.dao.PetMapper;
 import com.lzx.entity.Pet;
 import com.lzx.vo.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -16,100 +19,113 @@ public class PetController {
     @Autowired
     PetMapper petMapper;
 
+    @GetMapping
+    public String getIndex(Model model) {
+        return "petIndex";
+    }
+
+    private Pet pet = null;
+
+    @PostMapping("/all")
+    @ResponseBody
+    public List<Pet> getAll(Model model) {
+        List<Pet> list = petMapper.selectAll();
+        return list;
+    }
+
     @PostMapping
     @ResponseBody
-    public ApiResponse addPet(Pet pet) {
-        if (petMapper.insert(pet) != 0) {
-            return new ApiResponse();
+    public ResponseEntity addPet(Pet pet) {
+        pet = petMapper.insert(pet);
+        if (pet != null) {
+            return ResponseEntity.status(200).body(pet);
         } else {
-            return new ApiResponse(405, "error", "Invalid input");
+            return ResponseEntity.status(405).body(new ApiResponse(1, "error", "Invalid input"));
         }
     }
 
 
     @PutMapping
     @ResponseBody
-    public ApiResponse updatePet(Pet pet) {
+    public ResponseEntity updatePet(Pet pet) {
         if (pet.getId() == null) {
             if (petMapper.selectByPrimaryKey(pet.getId()) != null) {
-                if (petMapper.updateByPrimaryKey(pet) != 0) {
-                    return new ApiResponse();
+                pet = petMapper.updateByPrimaryKey(pet);
+                if ( pet!=null) {
+                    return ResponseEntity.status(200).body(pet);
                 } else {
-                    return new ApiResponse(405, "error", "Validation exception");
+                    return ResponseEntity.status(405).body(new ApiResponse(3, "error", "Validation exception");
                 }
             } else {
-                return new ApiResponse(404, "error", "Pet not found");
+                return  ResponseEntity.status(404).body(new ApiResponse(1, "error", "Pet not found"));
             }
         } else {
-            return new ApiResponse(400, "error", "Invalid ID supplied");
+            return ResponseEntity.status(400).body(new ApiResponse(2, "error", "Invalid ID supplied"));
         }
     }
 
     @GetMapping("/findByStatus")
     @ResponseBody
-    public ApiResponse findByStatus(Pet pet) {
+    public ResponseEntity findByStatus(Pet pet) {
         List<Pet> list = null;
         if (pet.getStatus() == null || pet.getStatus().isEmpty()) {
-            return new ApiResponse(400, "error", "Invalid status value");
+            return ResponseEntity.status(400).body(new ApiResponse(2, "error", "Invalid Status supplied"));
         } else {
             list = petMapper.selectByStatus(pet.getStatus());
-            if (list == null) {
-                return new ApiResponse(200, "success", "successful operation");
+            if (list != null) {
+                return ResponseEntity.status(200).body(list);
             } else {
-                return new ApiResponse();
+                return ResponseEntity.status(404).body(new ApiResponse(1, "error", "Pet not found"));
             }
         }
     }
-
     @GetMapping("/{petId}")
     @ResponseBody
-    public ApiResponse findById(@PathVariable int petId) {
+    public ResponseEntity findById(@PathVariable int petId) {
         if (petId == 0) {
-            return new ApiResponse(400, "error", "Invalid ID value");
+            return ResponseEntity.status(400).body(new ApiResponse(2,"error","Invalid ID Value"));
         } else {
-            if (petMapper.selectByPrimaryKey(petId) != null) {
-                return new ApiResponse(200, "error", "successful operation");
+            Pet pet = petMapper.selectByPrimaryKey(petId);
+            if (pet != null) {
+                return ResponseEntity.status(200).body(pet);
             } else {
-                return new ApiResponse(404, "error", "Pet not found");
+                return ResponseEntity.status(405).body(new ApiResponse(1,"error","Invalid input"));
             }
         }
     }
 
     @PostMapping("/{petId}")
     @ResponseBody
-    public ApiResponse updateById(@PathVariable int petId, Pet pet) {
+    public ResponseEntity updateById(@PathVariable int petId, Pet pet) {
         if (petId == 0) {
-            return new ApiResponse(405, "error", "Invalid input");
+            return ResponseEntity.status(405).body(new ApiResponse(1,"error","Invalid input"));
         } else {
-            petMapper.updateByPrimaryKey(pet);
-            return new ApiResponse();
+            pet = petMapper.updateByPrimaryKey(pet);
+            return ResponseEntity.status(200).body(pet);
         }
     }
 
     @DeleteMapping("/{petId}")
     @ResponseBody
-    public ApiResponse delById(@PathVariable int petId) {
-        Pet pet = new Pet();
+    public ResponseEntity delById(@PathVariable int petId) {
         pet.setId(petId);
         if (petMapper.selectByPrimaryKey(pet.getId()) == null) {
-            return new ApiResponse(405, "error", "Pet not found");
+            return ResponseEntity.status(405).body(new ApiResponse(1,"error","Pet not found"));
         } else {
             if (petMapper.deleteByPrimaryKey(petId) == 0) {
-                return new ApiResponse(400, "error", "Invalid ID supplied");
+                return ResponseEntity.status(400).body(new ApiResponse(2,"error", "Invalid ID supplied"));
             } else {
-                return new ApiResponse();
+                return ResponseEntity.status(200).body(new ApiResponse(200, "", "successful operation"));
             }
         }
     }
 
     @PostMapping("/{petId}/uploadImage")
     @ResponseBody
-    public ApiResponse uploadImage(@PathVariable int petId, Pet pet) {
-        if (petMapper.updateByPrimaryKey(pet) != 0) {
-            return new ApiResponse(200, "error", "successful operation");
+    public ResponseEntity uploadImage(@PathVariable int petId, Pet pet) {
+        if (petMapper.upLoadImg(pet) != 0) {
+            return  ResponseEntity.status(200).body(new ApiResponse(200,"unknown","additionalMetadata: "+new Date()+"\\nFile uploaded to "+pet.getPhoto_urls()));
         }
-        return new ApiResponse();
+        return ResponseEntity.status(404).body(null);
     }
-
-
 }

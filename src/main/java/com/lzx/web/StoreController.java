@@ -4,6 +4,7 @@ import com.lzx.dao.OrderMapper;
 import com.lzx.entity.Order;
 import com.lzx.vo.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,51 +13,56 @@ import org.springframework.web.bind.annotation.*;
 public class StoreController {
 
     @Autowired
-    OrderMapper orderMapper;
+    private OrderMapper orderMapper;
+
+    private Order order;
 
     @GetMapping("/inventory")
     @ResponseBody
-    public ApiResponse getInventory() {
-        if (orderMapper.selectByStatus("inventoru") != null) {
-            return new ApiResponse(200, "", "successful operation");
+    public ResponseEntity getInventory() {
+        order = orderMapper.selectByStatus("inventoru");
+        if (order != null) {
+            return ResponseEntity.status(200).body(order);
         }
-        return new ApiResponse();
+        return null;
     }
 
     @PostMapping("/order")
     @ResponseBody
-    public ApiResponse addOrder(Order order) {
-        if (orderMapper.insert(order) != 0) {
-            return new ApiResponse(200, "", "successful operation");
+    public ResponseEntity addOrder(Order order) {
+        order = orderMapper.insert(order);
+        if (order != null) {
+            return ResponseEntity.status(200).body(order);
         } else {
-            return new ApiResponse(400, "", "Invalid Order");
+            return ResponseEntity.status(400).body(new ApiResponse(1, "error", "Invalid Order"));
         }
     }
 
     @GetMapping("/order/{orderId}")
     @ResponseBody
-    public ApiResponse getById(@PathVariable int orderId) {
+    public ResponseEntity getById(@PathVariable int orderId) {
         if (orderId == 0) {
-            return new ApiResponse(400, "", "Invalid ID supplied");
+            return ResponseEntity.status(400).body(new ApiResponse(1, "error", "Invalid ID supplied"));
         } else {
-            if (orderMapper.deleteByPrimaryKey(orderId) != 0) {
-                return new ApiResponse(200, "", "successful operation");
+            order = orderMapper.selectByPrimaryKey(orderId);
+            if (order != null) {
+                return ResponseEntity.status(200).body(order);
             } else {
-                return new ApiResponse(400, "", "Invalid ID supplied");
+                return ResponseEntity.status(404).body(new ApiResponse(2, "error", "Order not found"));
             }
         }
     }
 
     @DeleteMapping("/order/{orderId}")
     @ResponseBody
-    public ApiResponse deleteById(@PathVariable int orderId) {
+    public ResponseEntity deleteById(@PathVariable int orderId) {
         if (orderId == 0) {
-            return new ApiResponse(400, "", "Invalid ID supplied");
+            return ResponseEntity.status(400).body(new ApiResponse(1, "error", "Invalid ID supplied"));
         } else {
             if (orderMapper.deleteByPrimaryKey(orderId) != 0) {
-                return new ApiResponse(200, "", "successful operation");
+                return ResponseEntity.status(200).body(new ApiResponse(200, "", "successful operation"));
             } else {
-                return new ApiResponse(404, "", "Order not found");
+                return ResponseEntity.status(404).body(new ApiResponse(2, "error", "Order not found"));
             }
         }
     }

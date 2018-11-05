@@ -4,8 +4,10 @@ import com.lzx.dao.UserMapper;
 import com.lzx.entity.User;
 import com.lzx.vo.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,96 +16,100 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    UserMapper userMapper;
+    private UserMapper userMapper;
+
+    private User user;
 
     @PostMapping
     @ResponseBody
-    public ApiResponse addUser(User user) {
-        if (userMapper.insert(user) != 0) {
-            return new ApiResponse("default", "successful operation");
-        }
-        return new ApiResponse();
+    public ResponseEntity addUser(User user) {
+        user = userMapper.insert(user);
+        return ResponseEntity.status(200).body(user);
     }
 
     @PostMapping("/createWithArray")
     @ResponseBody
-    public ApiResponse addUser(ArrayList<User> list) {
+    public ResponseEntity addUser(ArrayList<User> list) {
         for (User user : list) {
             userMapper.insert(user);
         }
-        return new ApiResponse("default", "successful operation");
+        return ResponseEntity.status(200).body(list);
     }
 
     @PostMapping("/createWithList")
     @ResponseBody
-    public ApiResponse addUser(List<User> list) {
+    public ResponseEntity addUser(List<User> list) {
         for (User user : list) {
             userMapper.insert(user);
         }
-        return new ApiResponse("default", "successful operation");
+        return ResponseEntity.status(200).body(list);
     }
 
     @GetMapping("/login")
     @ResponseBody
-    public ApiResponse login(User user) {
-        if (userMapper.logIn(user) != 0) {
+    public ResponseEntity login(User user) {
+        user = userMapper.logIn(user);
+        if (user != null) {
             userMapper.updateStatus(user);
-            return new ApiResponse(200, "", "successful operation");
+            return ResponseEntity.status(200).body(user);
         } else {
-            return new ApiResponse(400, "", "Invalid username/password supplied");
+            return ResponseEntity.status(200).body(new ApiResponse(400, "error", "Invalid username/password supplied"));
         }
     }
 
     @GetMapping("/logout")
     @ResponseBody
-    public ApiResponse logout(@SessionAttribute User user) {
-        userMapper.updateStatus(user);
-        return new ApiResponse("default", "successful operation");
+    public ResponseEntity logout(@SessionAttribute User user) {
+        user = userMapper.updateStatus(user);
+        return ResponseEntity.status(200).body(user);
     }
 
     @GetMapping("/{username}")
     @ResponseBody
-    public ApiResponse findByUserName(@PathVariable String userName) {
+    public ResponseEntity findByUserName(@PathVariable String userName) {
         if (userName == "") {
-            return new ApiResponse(400, "", "Invalid username supplied");
+            return ResponseEntity.status(400).body(new ApiResponse(400, "error", "Invalid username supplied"));
         } else {
-            if (userMapper.selectByUserName(userName) != null) {
-                return new ApiResponse(200, "", "successful operation");
+            user = userMapper.selectByUserName(userName);
+            if (user != null) {
+                return ResponseEntity.status(200).body(user);
             } else {
-                return new ApiResponse(404, "", "User not found");
+                return ResponseEntity.status(400).body(new ApiResponse(400, "error", "User not found"));
             }
         }
     }
 
     @PutMapping("/{username}")
     @ResponseBody
-    public ApiResponse updateUser(@PathVariable String userName) {
+    public ResponseEntity updateUser(@PathVariable String userName) {
+        User users = null;
         if (userName == "") {
-            return new ApiResponse(400, "", "Invalid username supplied");
+            return ResponseEntity.status(400).body(new ApiResponse(400, "error", "Invalid username supplied"));
         } else {
-            User user = userMapper.selectByUserName(userName);
+            user = userMapper.selectByUserName(userName);
             if (user != null) {
-                userMapper.updateByPrimaryKey(user);
+                users = userMapper.updateByPrimaryKey(user);
             } else {
-                return new ApiResponse(404, "", "User not found");
+                return ResponseEntity.status(400).body(new ApiResponse(400, "error", "User not found"));
             }
         }
-        return new ApiResponse();
+        return ResponseEntity.status(200).body(users);
     }
 
     @DeleteMapping("/{username}")
     @ResponseBody
-    public ApiResponse deleteUser(@PathVariable String userName){
+    public ResponseEntity deleteUser(@PathVariable String userName) {
         if (userName == "") {
-            return new ApiResponse(400, "", "Invalid username supplied");
+            return ResponseEntity.status(400).body(new ApiResponse(400, "error", "Invalid username supplied"));
         } else {
             User user = userMapper.selectByUserName(userName);
             if (user != null) {
                 userMapper.deleteByUserName(userName);
             } else {
-                return new ApiResponse(404, "", "User not found");
+
+                return ResponseEntity.status(400).body(new ApiResponse(400, "error", "User not found"));
             }
         }
-        return new ApiResponse();
+        return ResponseEntity.status(200).body(new ApiResponse(1,"","successful operation"));
     }
 }
