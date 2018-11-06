@@ -1,7 +1,6 @@
 package com.lzx.dao;
 
 import com.lzx.entity.User;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public interface UserMapper {
 
     int updateByUserName(User record);
 
-    int selectByNameAndPassword(User user);
+    User selectByNameAndPassword(User user);
 
     int updateStatus(User user);
 }

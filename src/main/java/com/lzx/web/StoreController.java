@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+
 @Controller
 @RequestMapping("/store")
 public class StoreController {
@@ -15,28 +17,23 @@ public class StoreController {
     @Autowired
     private OrderMapper orderMapper;
 
-    private Order order;
 
     @GetMapping("/inventory")
     @ResponseBody
     public ResponseEntity getInventory() {
-//        order = orderMapper.selectByStatus("inventor");
-//        if (order != null) {
-//            return ResponseEntity.status(200).body(order);
-//        }
-        return null;
+       HashMap<String, Integer> map = orderMapper.countByStatus();
+       return ResponseEntity.status(200).body(map);
     }
 
     @PostMapping("/order")
     @ResponseBody
     public ResponseEntity addOrder(Order order) {
-//        order = orderMapper.insert(order);
-//        if (order != null) {
-//            return ResponseEntity.status(200).body(order);
-//        } else {
-//            return ResponseEntity.status(400).body(new ApiResponse(1, "error", "Invalid Order"));
-//        }
-        return null;
+        int num = orderMapper.insert(order);
+        if (num != 0) {
+            return ResponseEntity.status(200).body(order);
+        } else {
+            return ResponseEntity.status(400).body(new ApiResponse(1, "error", "Invalid Order"));
+        }
     }
 
     @GetMapping("/order/{orderId}")
@@ -45,7 +42,7 @@ public class StoreController {
         if (orderId == 0) {
             return ResponseEntity.status(400).body(new ApiResponse(1, "error", "Invalid ID supplied"));
         } else {
-            order = orderMapper.selectByPrimaryKey(orderId);
+            Order order = orderMapper.selectByPrimaryKey(orderId);
             if (order != null) {
                 return ResponseEntity.status(200).body(order);
             } else {

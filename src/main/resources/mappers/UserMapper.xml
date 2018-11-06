@@ -49,7 +49,7 @@
     select id, user_name, first_name, last_name, email, password, phone, user_status
     from `user`
   </select>
-    <select id="selectByNameAndPassword" resultType="java.lang.Integer">
+    <select id="selectByNameAndPassword" resultType="com.lzx.entity.User">
        select *
       from `user` where user_name = #{user_name} and password = #{password}
     </select>
